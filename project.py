@@ -28,28 +28,31 @@ pygame.display.set_caption("Math Matching Game")
 # Timer
 timer = pygame.time.Clock()
 
-# Card class
+# Card class definition
 class Card(pygame.sprite.Sprite):
-    def __init__(self, text, x, y):
+    def __init__(self, text, x_pos, y_pos):
         super().__init__()
         self.text = text
         self.image = pygame.Surface((CARD_WIDTH, CARD_HEIGHT))
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect = self.image.get_rect(topleft=(x_pos, y_pos))
         self.visible = False
         self.matched = False
         self.render_background()
 
     def render_background(self):
+        # Fill the card's background
         self.image.fill(WHITE)
         pygame.draw.rect(self.image, BLACK, self.image.get_rect(), CARD_FRAME_WIDTH)
 
     def render_text(self):
+        # Render the text on the card
         font = pygame.font.Font(None, FONT_SIZE)
         text_surface = font.render(self.text, True, BLACK)
         text_rect = text_surface.get_rect(center=self.image.get_rect().center)
         self.image.blit(text_surface, text_rect)
 
     def flip(self):
+        # Flip the card to show or hide text
         if not self.matched:
             self.visible = not self.visible
             if self.visible:
@@ -57,6 +60,7 @@ class Card(pygame.sprite.Sprite):
             else:
                 self.render_background()
 
+# Function to create the operation cards
 def create_board_operations():
     operations = ['+', '-', '*', '/']
     board = []
@@ -66,12 +70,13 @@ def create_board_operations():
             number1 = random.randint(1, 10)
             number2 = random.randint(1, 10)
             text = f"{number1} {operation} {number2}"
-            x = col * (CARD_WIDTH + 10)
-            y = row * (CARD_HEIGHT + 10) + SPACE_AT_TOP
-            board.append(Card(text, x, y))
+            x_pos = col * (CARD_WIDTH + 10)
+            y_pos = row * (CARD_HEIGHT + 10) + SPACE_AT_TOP
+            board.append(Card(text, x_pos, y_pos))
     random.shuffle(board)
     return board
 
+# Function to create the result cards based on operations
 def create_board_results(board_operations):
     results = []
     for card in board_operations:
@@ -86,21 +91,24 @@ def create_board_results(board_operations):
 
     board_results = []
     for index, result in enumerate(results):
-        x = (index % 4) * (CARD_WIDTH + 10)
-        y = (index // 4) * (CARD_HEIGHT + 10) + SPACE_AT_TOP
-        board_results.append(Card(result, x, y))
+        x_pos = (index % 4) * (CARD_WIDTH + 10)
+        y_pos = (index // 4) * (CARD_HEIGHT + 10) + SPACE_AT_TOP
+        board_results.append(Card(result, x_pos, y_pos))
     return board_results
 
+# Helper function to center cards
 def center_cards_horizontally(cards, start_x):
     for card in cards:
         card.rect.x += start_x
 
+# Helper function to render text on screen
 def render_text(screen, text, size, color, position):
     font = pygame.font.Font(None, size)
     surface = font.render(text, True, color)
     rect = surface.get_rect(center=position)
     screen.blit(surface, rect)
 
+# Main function
 def main():
     board_operations = create_board_operations()
     board_results = create_board_results(board_operations)
@@ -128,6 +136,7 @@ def main():
 
     running = True
     while running:
+        # Limit the frame rate
         timer.tick(FPS)
         screen.fill(WHITE)
         all_sprites.draw(screen)
@@ -141,6 +150,7 @@ def main():
         if not game_over and all(card.matched for card in all_sprites):
             game_over = True
 
+        # Display game information
         render_text(screen, f"Time: {elapsed_time} s", FONT_SIZE, BLACK, (SCREEN_WIDTH - 155, SCREEN_HEIGHT - 53))
         render_text(screen, f"Moves: {moves}", FONT_SIZE, BLACK, (SCREEN_WIDTH - 305, SCREEN_HEIGHT - 53))
         render_text(screen, f"Misses: {misses}", FONT_SIZE, BLACK, (SCREEN_WIDTH - 455, SCREEN_HEIGHT - 53))
