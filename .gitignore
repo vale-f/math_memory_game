@@ -1,5 +1,4 @@
 # Virtual environments
-env/
 venv/
 
 # Python cache
@@ -20,6 +19,3 @@ build/
 # Environment-specific
 *.pkl
 *.db
-
-# Python virtual environment config
-pyvenv.cfg
